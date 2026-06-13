@@ -9,7 +9,8 @@
             font-family: Arial, sans-serif;
             background-color: #f1f5f9;
             margin: 0;
-            padding: 15px;
+            st.markdown("""
+<style>
             color: #333;
         }
         .container {
