@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculos Skyline Empleados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #112e52;
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #0f766e;
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .section {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        label {
+            font-size: 14px;
+            flex: 1;
+        }
+        select, input {
+            width: 45%;
+            padding: 8px;
+            border: 1px solid #94a3b8;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            background-color: #0f766e;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        button:active {
+            background-color: #0d5c56;
+        }
+        .results {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+        }
+        .results p {
+            margin: 5px 0;
+        }
+        .text-red { color: #b91c1c; font-weight: bold; }
+        .text-total { 
+            color: #0f766e; 
+            font-size: 18px; 
+            font-weight: bold; 
+            border-top: 2px solid #cbd5e1;
+            padding-top: 10px;
+            margin-top: 10px !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Skyline Hood Cleaning</h1>
+    <h2>Cálculos Skyline para Empleados</h2>
+
+    <div class="section">
+        <span class="section-title">Configuración de la Orden</span>
+        <div class="form-group">
+            <label>Estado:</label>
+            <select id="estado">
+                <option value="0.0635">Connecticut (6.35%)</option>
+                <option value="0.06625">New Jersey (6.625%)</option>
+                <option value="0.08875">New York (8.875%)</option>
+                <option value="0.060">Pennsylvania (6.0%)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Tipo de Restaurante:</label>
+            <select id="tipo_restaurante">
+                <option value="hispano">Hispano (Normal)</option>
+                <option value="americano">Americano (+10%)</option>
+                <option value="chino">Chino (+15%)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Piso del Local:</label>
+            <select id="piso">
+                <option value="1">1</option><option value="2">2</option>
+                <option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option>
+                <option value="7">7</option><option value="8">8</option>
+                <option value="9">9</option><option value="10">10</option>
+                <option value="11">11</option><option value="12">12</option>
+                <option value="13">13</option><option value="14">14</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Descuento Cliente:</label>
+            <select id="descuento">
+                <option value="0">0%</option><option value="10">10%</option>
+                <option value="15">15%</option><option value="20">20%</option>
+                <option value="25">25%</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="section">
+        <span class="section-title">Componentes del Sistema</span>
+        <div class="form-group">
+            <label><b>Filtros:</b></label>
+            <input type="number" id="filtros" value="3" min="2">
+        </div>
+        <div class="form-group">
+            <label>Hoods Totales:</label>
+            <input type="number" id="campanas" value="1" min="1">
+        </div>
+        <div class="form-group">
+            <label>Abanicos Totales:</label>
+            <input type="number" id="abanicos" value="1" min="1">
+        </div>
+        <div class="form-group">
+            <label>Ductos Totales:</label>
+            <input type="number" id="ductos" value="1" min="1">
+        </div>
+    </div>
+
+    <button onclick="calcularCotizacion()">CALCULAR TOTAL</button>
+
+    <div class="results">
+        <span class="section-title">Resumen de Cotización</span>
+        <p id="lbl_base">Precio Base: $0.00</p>
+        <p id="lbl_extras">Cargos Adicionales: $0.00</p>
+        <p id="lbl_tipo_rest">Recargo Restaurante: $0.00</p>
+        <p id="lbl_piso">Recargo Piso: $0.00</p>
+        <p id="lbl_descuento" class="text-red">Descuento Cliente: $0.00</p>
+        <p id="lbl_tax">Tax Calculado: $0.00</p>
+        <p id="lbl_total" class="text-total">TOTAL NETO: $0.00</p>
+    </div>
+</div>
+
+<script>
+    function calcularCotizacion() {
+        const estadoSelect = document.getElementById("estado");
+        const tasa_tax = parseFloat(estadoSelect.value);
+        const nombreEstado = estadoSelect.options[estadoSelect.selectedIndex].text.split(' ')[0];
+        
+        const tipoRestaurante = document.getElementById("tipo_restaurante").value;
+        const piso = parseInt(document.getElementById("piso").value) || 1;
+        const porcentaje_desc = parseFloat(document.getElementById("descuento").value) / 100;
+        
+        const filtros = parseInt(document.getElementById("filtros").value) || 0;
+        const campanas = parseInt(document.getElementById("campanas").value) || 1;
+        const abanicos = parseInt(document.getElementById("abanicos").value) || 1;
+        const ductos = parseInt(document.getElementById("ductos").value) || 1;
+
+        if (filtros < 2) {
+            alert("Atención: El mínimo de filtros es 2.");
+            return;
+        }
+
+        // 1. Matriz de precios base
+        const precios_fijos = {
+            2: 408.00, 3: 435.50, 4: 435.50, 5: 440.00, 6: 450.00,
+            7: 463.80, 8: 480.80, 9: 500.00, 10: 500.50, 11: 515.50,
+            12: 550.50, 13: 550.00, 14: 580.00, 15: 600.00, 16: 650.00,
+            17: 660.00, 18: 700.00, 19: 800.00, 20: 850.00, 21: 900.00
+        };
+
+        let precio_objetivo = 0;
+        if (precios_fijos[filtros]) {
+            precio_objetivo = precios_fijos[filtros];
+        } else if (filtros >= 22 && filtros <= 26) {
+            precio_objetivo = 1200.00;
+        } else if (filtros >= 27 && filtros <= 30) {
+            precio_objetivo = 1300.00;
+        } else if (filtros >= 31 && filtros <= 37) {
+            precio_objetivo = 1450.00;
+        } else {
+            precio_objetivo = 1450.00 + ((filtros - 37) * 40.00);
+        }
+
+        const base_filtros_limpio = precio_objetivo / (1 + tasa_tax);
+
+        // 2. Extras de componentes
+        const extras_campana = campanas > 1 ? (campanas - 1) * 35.00 : 0.0;
+        const extras_abanico = abanicos > 1 ? (abanicos - 1) * 45.00 : 0.0;
+        
+        let extras_ducto = 0.0;
+        if (ductos <= 1) extras_ducto = 0.0;
+        else if (ductos === 2) extras_ducto = 20.0;
+        else if (ductos === 3) extras_ducto = 40.0;
+        else if (ductos === 4) extras_ducto = 50.0;
+        else extras_ducto = 60.0 + ((ductos - 5) * 10.0);
+
+        const total_adicionales_base = extras_campana + extras_abanico + extras_ducto;
+        const subtotal_base_limpio = base_filtros_limpio + total_adicionales_base;
+
+        // 3. Recargo por Tipo de Restaurante
+        let porcentaje_tipo = 0.0;
+        let nombre_tipo_display = "Hispano";
+        
+        if (tipoRestaurante === "americano") {
+            porcentaje_tipo = 0.10; // 10% adicional
+            nombre_tipo_display = "Americano (+10%)";
+        } else if (tipoRestaurante === "chino") {
+            porcentaje_tipo = 0.15; // 15% adicional
+            nombre_tipo_display = "Chino (+15%)";
+        }
+        
+        const recargo_tipo = subtotal_base_limpio * porcentaje_tipo;
+
+        // 4. Recargo Piso (Actualizado a monto fijo escalonado)
+        let recargo_piso = 0.0;
+        if (piso >= 3) {
+            recargo_piso = 25.0 + ((piso - 3) * 10.0);
+        }
+        
+        // Sumamos todos los recargos a la base
+        const base_con_recargos = subtotal_base_limpio + recargo_tipo + recargo_piso;
+
+        // 5. Descuento Cliente
+        const valor_descuento = base_con_recargos * porcentaje_desc;
+        const base_final = base_con_recargos - valor_descuento;
+
+        // 6. Tax Final
+        const tax_final = base_final * tasa_tax;
+        const total_final_cobrar = base_final + tax_final;
+
+        // Actualizar Interfaz
+        document.getElementById("lbl_base").innerText = `Precio Base: $${base_filtros_limpio.toFixed(2)}`;
+        document.getElementById("lbl_extras").innerText = `Cargos Adicionales: $${total_adicionales_base.toFixed(2)}`;
+        
+        if (porcentaje_tipo > 0) {
+            document.getElementById("lbl_tipo_rest").innerText = `Recargo Rest. ${nombre_tipo_display}: $${recargo_tipo.toFixed(2)}`;
+            document.getElementById("lbl_tipo_rest").style.display = "block";
+        } else {
+            document.getElementById("lbl_tipo_rest").innerText = `Recargo Restaurante: $0.00`;
+            document.getElementById("lbl_tipo_rest").style.display = "none";
+        }
+
+        // Mostrar etiqueta de recargo de piso actualizada sin el porcentaje
+        if (piso >= 3) {
+            document.getElementById("lbl_piso").innerText = `Recargo Piso (${piso}º): $${recargo_piso.toFixed(2)}`;
+        } else {
+            document.getElementById("lbl_piso").innerText = `Recargo Piso: $0.00`;
+        }
+
+        document.getElementById("lbl_descuento").innerText = `Descuento Cliente: -$${valor_descuento.toFixed(2)}`;
+        document.getElementById("lbl_tax").innerText = `Tax (${nombreEstado}): $${tax_final.toFixed(2)}`;
+        document.getElementById("lbl_total").innerText = `TOTAL NETO A COBRAR: $${total_final_cobrar.toFixed(2)}`;
+    }
+</script>
+
+</body>
+</html>
